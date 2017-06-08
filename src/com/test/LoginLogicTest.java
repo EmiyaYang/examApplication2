@@ -76,7 +76,7 @@ public class LoginLogicTest implements LoginLogic {
 
         for(UserBean x: user){
             if(email.equals((x.getEmail())) && password.equals(x.getPassword())){
-                record = getUserRPaper(x.getId());
+                record = this.getUserRPaper(x.getId());
                 return new UserTransferBean(x.getId(),x.getName(),x.getEmail(),x.getSignature(),record,getPaper(record));
             }
         }

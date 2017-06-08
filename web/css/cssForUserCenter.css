@@ -1,0 +1,11 @@
+form.form-horizontal{
+    padding-top: 2em;
+}
+
+form.form-horizontal input{
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #23527c;
+    margin-bottom: 1em;
+}
+

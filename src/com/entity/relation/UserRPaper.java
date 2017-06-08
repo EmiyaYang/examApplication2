@@ -6,7 +6,8 @@ public class UserRPaper {
     private int userId;
     private int paperId;
     private String time;
-    private int score;
+    private float accuracy;
+    private int timeUsed;
 
     public int getId() {
         return id;
@@ -40,11 +41,11 @@ public class UserRPaper {
         this.time = time;
     }
 
-    public int getScore() {
-        return score;
+    public float getAccuracy() {
+        return accuracy;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setAccuracy(float accuracy) {
+        this.accuracy = accuracy;
     }
 }

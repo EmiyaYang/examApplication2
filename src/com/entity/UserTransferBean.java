@@ -26,12 +26,14 @@ public class UserTransferBean {
         paperBeans = new ArrayList<>();
     }
 
-    public UserTransferBean(int id, String name, String email, String signature, List<UserRPaper> userRPapers, List<PaperBean> paperBean) {
+    public UserTransferBean(int id, String name, String email, String signature, List<UserRPaper> userRPapers, List<PaperBean> paperBeans) {
         this();
         this.id = id;
         this.name = name;
         this.email = email;
         this.signature = signature;
+        this.userRPapers = userRPapers;
+        this.paperBeans = paperBeans;
     }
 
     public int getId() {

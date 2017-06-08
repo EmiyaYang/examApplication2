@@ -1,9 +1,9 @@
 package com.utills;
 
+import com.model.Interfaces.InforLogic;
 import com.model.Interfaces.LoginLogic;
-import com.model.Interfaces.SearchLogic;
-import com.model.LoginLogicImpl;
-import com.model.SearchLogicImpl;
+import com.test.InforLogicTest;
+import com.test.LoginLogicTest;
 
 /*
  * 单例模式管理接口
@@ -13,12 +13,11 @@ public class ModelHelper {
     private static ModelHelper instance;
 
     private LoginLogic loginLogic;
-
-    private SearchLogic searchLogic;
+    private InforLogic inforLogic;
 
     private ModelHelper(){
-        this.loginLogic = new LoginLogicImpl();
-        this.searchLogic = new SearchLogicImpl();
+        this.loginLogic = new LoginLogicTest();
+        this.inforLogic = new InforLogicTest();
     }
 
     public static ModelHelper getInstance(){
@@ -32,7 +31,5 @@ public class ModelHelper {
         return getInstance().loginLogic;
     }
 
-    public static SearchLogic getSearchLogic() {
-        return getInstance().searchLogic;
-    }
+    public static InforLogic getInforgicTest(){ return getInstance().inforLogic; }
 }

@@ -116,7 +116,7 @@
             };
 
             function judge () {
-                var score = 0;
+                var accuracy = 0;
                 $('.quest').each(function () {
                     var ans = String();
                     var qid = $(this).attr('id');
@@ -127,11 +127,11 @@
                     });
 
                     if (ans == 姑且把试卷答案硬编码在这好了毕竟还没做到后面[qid].ans) {
-                        score += 姑且把试卷答案硬编码在这好了毕竟还没做到后面[qid].val;
+                        accuracy += 姑且把试卷答案硬编码在这好了毕竟还没做到后面[qid].val;
                     }
                 });
 
-                return score;
+                return accuracy;
             }
 
             function init_view() {
@@ -167,12 +167,12 @@
                     setTimeout(function () {
 
                         var modal_msg = $('#scoreModal').find('.modal-dialog .modal-content .modal-body');
-                        var score = judge();
+                        var accuracy = judge();
 
                         modal_msg.find('div').remove();
 
-                        $('#quest-score').text(score + ' /' + ' 100 分');
-                        $('#quest-rank').text('你的成绩击败了全国 ' + score / 100 * 100 + '% 的考生! 真厉害!');
+                        $('#quest-accuracy').text(accuracy + ' /' + ' 100 分');
+                        $('#quest-rank').text('你的成绩击败了全国 ' + accuracy / 100 * 100 + '% 的考生! 真厉害!');
 
                     }, 1000);
 
@@ -197,7 +197,7 @@
 
                     for (var i in history_rank_list) {
                         var it = history_rank_list[i];
-                        rank_table.append('<tr><td>' + it.name + '</td><td>' + it.date.toLocaleString() + '</td><td>' + it.score + '</td></tr>');
+                        rank_table.append('<tr><td>' + it.name + '</td><td>' + it.date.toLocaleString() + '</td><td>' + it.accuracy + '</td></tr>');
                     }
                 });
 
@@ -549,7 +549,7 @@
                             <div></div>
                             <div></div>
                         </div>
-                        <p id="quest-score" style="font-size: xx-large; padding: 12% 0;">
+                        <p id="quest-accuracy" style="font-size: xx-large; padding: 12% 0;">
                         </p>
                         <p id="quest-rank">请勿关闭页面</p>
                     </div>
