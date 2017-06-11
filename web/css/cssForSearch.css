@@ -74,3 +74,29 @@
 	border-top-style: none;
 }
 
+
+
+#search-results-wrapper .btn-block{
+	background-color: transparent;
+}
+
+#my-tab-content .panel{
+	margin: 10px;
+}
+/*标签页css设置*/
+
+/*标签页边框*/
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    border: 1px solid #4BBE8D;
+    border-bottom:1px solid white;
+}
+/*标签下线*/
+.nav-tabs {
+    border-bottom: 1px solid #4BBE8D;
+}
+
+#search-results-wrapper .tab-pane{
+	border: 1px solid #4BBE8D;
+	border-top-style: none;
+}
+
