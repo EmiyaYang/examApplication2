@@ -9,11 +9,19 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/911bb220f7.css">
         <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ConnorAtherton/loaders.css/master/loaders.min.css"/>
 
-        <!--<link rel="stylesheet" href="header.css"/>-->
+
         <link rel="stylesheet" href="css/quest-page.css"/>
-        <link rel="stylesheet" href="css/footer.css"/>
 
         <script>
+            (function ($) {
+                $.getUrlParam = function (name) {
+                    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+                    var r = window.location.search.substr(1).match(reg);
+                    if (r!= null)
+                        return decodeURI(r[2]);
+                    return null;
+                }
+            })(jQuery)
 
             function formatTime(format, second) {
 
@@ -31,24 +39,23 @@
             const TOTAL_QUESTS = 6;
             var finished_quest = 0;
 
-            const quest_time = 60;
+            const quest_time = 1800;
             var cur_time = quest_time;
             const WARNING_TIME = cur_time * 0.2;
 
-            var quest_time_node = $('#quest-time');
-            var quest_footer_nodes = $('.quest-footer');
-            var quest_submit_node = $('#quest-submit');
-            var quest_progress_bar = $('#time-view').find('.progress-bar');
+            var quest_time_node;
+            var quest_footer_nodes;
+            var quest_submit_node;
+            var quest_progress_bar;
             var quest_timer;
-
-            var quest_user = $('#quest-user');
+            var quest_user;
 
             function count_time () {
 
                 quest_time_node.text(formatTime("hh:mm:ss", cur_time));
                 quest_progress_bar.css("width", ((1 - (cur_time / quest_time)) * 100) + "%");
                 cur_time--;
-
+                window.sessionStorage.setItem("testTime",cur_time);
                 if (cur_time >= 0) {
                     if (cur_time == WARNING_TIME) {
                         quest_time_node.attr('data-content', '考试即将结束, 请注意时间.');
@@ -91,50 +98,14 @@
                     a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(v);
                     if (a) {
                         return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4],
-                                +a[5], +a[6]));
+                            +a[5], +a[6]));
                     }
                 }
                 return v;
 
             }
 
-
-            var 这么硬编码的吗 = {
-
-                "questName": "2017 年高考全国 I 卷理综选择题节选",
-                "questIntro": "这个作者很懒，"
-
-            }
-
-            var 姑且把试卷答案硬编码在这好了毕竟还没做到后面 = {
-                "q1":{"ans": "B", "val":15},
-                "q2":{"ans": "D", "val":15},
-                "q3":{"ans": "D", "val":15},
-                "q4":{"ans": "C", "val":15},
-                "q5":{"ans": "C", "val":15},
-                "q6":{"ans":"BC", "val":25}
-            };
-
-            function judge () {
-                var accuracy = 0;
-                $('.quest').each(function () {
-                    var ans = String();
-                    var qid = $(this).attr('id');
-                    $(this).find('.quest-footer').children().each(function () {
-                        if ($(this).hasClass('active')) {
-                            ans = ans.concat($(this).text());
-                        }
-                    });
-
-                    if (ans == 姑且把试卷答案硬编码在这好了毕竟还没做到后面[qid].ans) {
-                        accuracy += 姑且把试卷答案硬编码在这好了毕竟还没做到后面[qid].val;
-                    }
-                });
-
-                return accuracy;
-            }
-
-            function init_view() {
+            function init_quest_view() {
                 $('.opt-single').children('button').click(function () {
 
                     $(this).siblings('button').removeClass("active");
@@ -150,65 +121,41 @@
 
                     sync_sidebar_state(this);
                 });
+            }
+            
+            function terminate_test() {
+                clearTimeout(quest_timer);
+                quest_footer_nodes
+                    .children()
+                    .attr('disabled', 'disabled');
+                quest_time_node.text('考试结束');
+                quest_user.attr('disabled', 'disabled');
+                quest_time_node.popover('hide');
+                window.sessionStorage.removeItem("textTime")
+            }
+            
+            function init_view() {
+
+                quest_time_node = $('#quest-time');
+                quest_submit_node = $('#quest-submit');
+                quest_progress_bar = $('#time-view').find('.progress-bar');
+                quest_user = $('#quest-user');
 
                 $(window).scroll(function () {
-                    if (quest_time_node.attr('data-content').length != 0) {
+                    if (quest_time_node.attr('data-content') && quest_time_node.attr('data-content').length != 0) {
                         quest_time_node.popover('show');
                     }
                 });
 
-                $('#quest-submit').click(function () {
-                    clearTimeout(quest_timer);
-                    quest_footer_nodes
-                            .children()
-                            .attr('disabled', 'disabled');
-                    quest_time_node.text('考试结束');
-
-                    setTimeout(function () {
-
-                        var modal_msg = $('#scoreModal').find('.modal-dialog .modal-content .modal-body');
-                        var accuracy = judge();
-
-                        modal_msg.find('div').remove();
-
-                        $('#quest-accuracy').text(accuracy + ' /' + ' 100 分');
-                        $('#quest-rank').text('你的成绩击败了全国 ' + accuracy / 100 * 100 + '% 的考生! 真厉害!');
-
-                    }, 1000);
-
-                    quest_user.attr('disabled', 'disabled');
-
-                    quest_time_node.popover('hide');
-                });
-
-                $('#quest-overview').find('ul li a').each(function () {
-                    const qid = $(this).attr('href');
-                    var brief = $(qid + ' .quest-content').find('h4').text();
-                    if (brief.length > 9) {
-                        brief = brief.substr(0, 9) + ' ...';
-                    }
-
-                    $(this).append('<br/><span>' + brief + '</span>');
-                });
-
                 $('#quest-history').click(function () {
-
                     rank_table.empty();
-
                     for (var i in history_rank_list) {
                         var it = history_rank_list[i];
                         rank_table.append('<tr><td>' + it.name + '</td><td>' + it.date.toLocaleString() + '</td><td>' + it.accuracy + '</td></tr>');
                     }
                 });
-
                 $('#quest-start').click(start_test);
-
                 $('#quest-main-content').hide();
-            }
-
-
-            function fake_start_test() {
-                console.log('fake_start_test()');
             }
 
             function start_test() {
@@ -218,27 +165,28 @@
             }
 
             $(document).ready(init_view);
-
         </script>
-
+        <script src="js/examination.js"></script>
     </head>
-    <body data-spy="scroll" data-target="#quest-overview">
+    <body data-spy="scroll" data-target="#quest-overview" onbeforeunload="saveUserAnswer()">
+
 
         <section class="container" >
 
             <div class="row">
                 <div class="col-xs-12">
                     <div id="quest-preview" class="jumbotron">
-                        <h2>2017 年高考全国 I 卷理综选择题节选</h2>
+                        <h2 id="paper-name">2017 年高考全国 I 卷理综选择题节选</h2>
                         <div class="exam-desc">
                             <ul>
-                                <li title="作者"><i class="fa fa-pencil" aria-hidden="true"></i> <a href="#">作者</a></li>
-                                <li title="做答人次"><i class="fa fa-pencil-square-o"></i> 10.6k</li>
-                                <li title="题量"><i class="fa fa-file-text-o"></i> 11 道题</li>
-                                <li title="考试时间"><i class="fa fa-clock-o"></i> 120 分钟</li>
+                                <li title="作者"><i class="fa fa-pencil" aria-hidden="true"></i> <a id="paper-author" href="#">ENI48</a></li>
+                                <li title="做答人次"><i class="fa fa-pencil-square-o"></i> <span id="paper-click">10.6k</span></li>
+                                <li title="发表时刻"><i class="fa fa-calendar"></i> <span id="paper-create-time">2017-06-10</span></li>
+                                <li title="题量"><i class="fa fa-file-text-o"></i> 20 道题</li>
+                                <li title="考试时间"><i class="fa fa-clock-o"></i> 20 分钟</li>
                             </ul>
                         </div>
-                        <p>作者很懒，没有留下介绍</p>
+                        <p id="paper-brief">作者很懒，没有留下介绍</p>
                         <button id="quest-start" class="btn btn-primary btn-lg">开始考试</button>
                     </div>
                 </div>
@@ -267,10 +215,14 @@
                                 交卷
                             </button>
 
+                            <button class="btn btn-default">
+                                退出
+                            </button>
+
                         </div>
 
                         <div class="panel-footer">各题导航</div>
-                        <ul class="list-group nav">
+                        <ul id="ques-list" class="list-group nav">
                             <li class="list-group-item"><a href="#q1">1. 单项选择题 <i class="fa fa-fw fa-chevron-right"></i></a></li>
                             <li class="list-group-item"><a href="#q2">2. 单项选择题 <i class="fa fa-fw fa-chevron-right"></i></a></li>
                             <li class="list-group-item"><a href="#q3">3. 单项选择题 <i class="fa fa-fw fa-chevron-right"></i></a></li>
@@ -279,8 +231,6 @@
                             <li class="list-group-item"><a href="#q6">6. 多项选择题 <i class="fa fa-fw fa-chevron-right"></i></a></li>
                         </ul>
                     </div>
-
-
                 </div>
 
                 <div class="col-xs-9" id="quest-board">
@@ -304,16 +254,20 @@
                                     <td>C. 蓝藻细胞的能量来源于其线粒体有氧呼吸过程 &nbsp;&nbsp;&nbsp;&nbsp;</td>
                                     <td>D. 在叶绿体中可进行CO2的固定但不能合成ATP &nbsp;&nbsp;&nbsp;&nbsp;</td>
                                 </tr>
+                                <tr>
+                                    <td>C. 蓝藻细胞的能量来源于其线粒体有氧呼吸过程 &nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                    <td>D. 在叶绿体中可进行CO2的固定但不能合成ATP &nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                </tr>
                             </table>
                         </div>
 
                         <hr/>
 
                         <div class="quest-footer opt-single">
-                            <button class="btn btn-default">A</button>
-                            <button class="btn btn-default">B</button>
-                            <button class="btn btn-default">C</button>
-                            <button class="btn btn-default">D</button>
+                            <button class="btn btn-default" value="0">A</button>
+                            <button class="btn btn-default" value="1">B</button>
+                            <button class="btn btn-default" value="2">C</button>
+                            <button class="btn btn-default" value="3">D</button>
                         </div>
 
                     </section>
@@ -486,25 +440,7 @@
             </div>
         </section>
 
-        <footer>
-            <div class="container">
-                <div class="row">
-
-                    <p>Enimaxe - 在线考试系统</p>
-
-                    <p>
-                        由
-                        <a href="#">@杨家淇</a>,
-                        <a href="#">@冯景恒</a>, 和
-                        <a href="#">@谭达强</a>
-                        为提交 WEB 程序设计期末作业而制作.
-                    </p>
-
-                    <p class="mg-4 c-bg">嘴强考王系统小组 / 2017 / 春 </p>
-
-                </div>
-            </div>
-        </footer>
+        <script src="js/footer.js"></script>
 
         <div class="modal fade" id="historyModal" tabindex="-1">
             <div class="modal-dialog">
@@ -539,7 +475,7 @@
                         <h4 class="modal-title" style="text-align: center">你的成绩</h4>
                     </div>
                     <div class="modal-body" style="text-align: center">
-                        <div style="position: fixed; left: 48%; top: 45%;" class="ball-spin-fade-loader">
+                        <div style="position: fixed; left: 48.5%; top: 45%;" class="loader ball-spin-fade-loader">
                             <div></div>
                             <div></div>
                             <div></div>
