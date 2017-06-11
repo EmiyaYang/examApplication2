@@ -4,24 +4,37 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
     <servlet>
-        <servlet-name>controlServlet</servlet-name>
+        <servlet-name>control</servlet-name>
         <servlet-class>com.servlet.control</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>controlServlet</servlet-name>
-        <url-pattern>*.do</url-pattern>
+        <servlet-name>control</servlet-name>
+        <url-pattern>/control.do</url-pattern>
     </servlet-mapping>
-
     <servlet>
-        <servlet-name>userCenterServlet</servlet-name>
-        <servlet-class>com.servlet.userCenterServlet</servlet-class>
+        <servlet-name>SearchServlet</servlet-name>
+        <servlet-class>com.servlet.SearchServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>userCenterServlet</servlet-name>
-        <url-pattern>/userCenterServlet.do</url-pattern>
+        <servlet-name>SearchServlet</servlet-name>
+        <url-pattern>/SearchServlet.do</url-pattern>
     </servlet-mapping>
-
-
+    <servlet>
+        <servlet-name>SubmissionServlet</servlet-name>
+        <servlet-class>com.servlet.SubmissionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmissionServlet</servlet-name>
+        <url-pattern>/SubmissionServlet.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>ExaminationServlet</servlet-name>
+        <servlet-class>com.servlet.ExaminationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ExaminationServlet</servlet-name>
+        <url-pattern>/ExaminationServlet.do</url-pattern>
+    </servlet-mapping>
     <filter>
         <filter-name>userAccess</filter-name>
         <filter-class>com.servlet.filter.legalAccess</filter-class>
