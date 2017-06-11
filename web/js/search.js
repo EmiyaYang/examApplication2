@@ -26,7 +26,7 @@ var QReceiver ={
             var chars = ["A","B","C","D","E","F","G"]
             var result="";
             for (var j=0;j<options.length;j++){
-                result += chars[i]+"."+options[j]+"<br>"
+                result += chars[j]+"."+options[j]+"<br>"
             };
             return result;
         }
